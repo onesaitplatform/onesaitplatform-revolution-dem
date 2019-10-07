@@ -1,0 +1,65 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "PrometheusMetricOntology",
+    "type": "object",
+    "required": [
+        "TimeSerie"
+    ],
+    "properties": {
+        "TimeSerie": {
+            "type": "string",
+            "$ref": "#/datos"
+        }
+    },
+    "datos": {
+        "description": "Properties for DataModel TimeSerie",
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "object",
+                "required": [
+                    "$date"
+                ],
+                "properties": {
+                    "$date": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "instance": {
+                "type": "string"
+            },
+            "job": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "metric": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            },
+            "value": {
+                "type": "number"
+            }
+        },
+        "required": [
+            "timestamp",
+            "instance",
+            "job",
+            "id",
+            "name",
+            "metric",
+            "image",
+            "value"
+        ]
+    },
+    "description": "Ontology for Prometheus metrics",
+    "additionalProperties": true
+}

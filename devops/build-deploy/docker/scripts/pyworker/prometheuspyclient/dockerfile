@@ -1,0 +1,32 @@
+FROM python:3.6-slim-stretch
+
+# We need cron, sshpass (to specify SSH passwords from files) and sftp
+RUN apt-get update && \
+    apt-get install -y git cron && \
+    cd /tmp/ && \
+    git clone https://github.com/onesaitplatform/onesaitplatform-revolution-dem && \
+	mv  sources/prometheusclient/ /opt/pycli
+
+# Base directory into which to put our scripts
+ENV SCRIPT_DIR="/opt/pycli"
+
+ENV CRON_PY="0 8 * * *"
+
+ENV LOG_DIR="/var/log/pycli"
+# The python's log file
+ENV LOG_FILE="${LOG_DIR}/py.log"
+
+WORKDIR ${SCRIPT_DIR}
+
+# Install Python dependencies and make log directory/file available
+RUN pip install -r requirements.txt && \
+    mkdir -p ${LOG_DIR} && \
+    touch ${LOG_FILE}
+
+# We need to inject environment variables, since the cron job seems to ignore
+# any environment variables that are set by Docker
+ENTRYPOINT [ "/opt/pycli/environment.sh" ]
+	
+# Fires up cron as a background process, and makes the tail process the one
+# that keeps the container alive
+CMD cron && tail -f ${LOG_FILE}
