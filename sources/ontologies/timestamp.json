@@ -1,0 +1,53 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "timestamp",
+    "type": "object",
+    "required": [
+        "Asset"
+    ],
+    "properties": {
+        "Asset": {
+            "type": "string",
+            "$ref": "#/datos"
+        }
+    },
+    "datos": {
+        "description": "Properties for an Asset Type",
+        "type": "object",
+        "required": [
+            "metric",
+            "timestamp",
+            "job",
+            "instance",
+            "id",
+            "name",
+            "image"
+        ],
+        "properties": {
+            "metric": {
+                "type": "string"
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time"
+            },
+            "job": {
+                "type": "string"
+            },
+            "instance": {
+                "type": "string"
+            },
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            }
+        }
+    },
+    "description": "asset",
+    "additionalProperties": true
+}
