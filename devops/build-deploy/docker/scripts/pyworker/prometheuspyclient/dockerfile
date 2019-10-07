@@ -5,7 +5,8 @@ RUN apt-get update && \
     apt-get install -y git cron && \
     cd /tmp/ && \
     git clone https://github.com/onesaitplatform/onesaitplatform-revolution-dem && \
-	mv  onesaitplatform-revolution-dem/sources/prometheus-client/ /opt/pycli
+	mv  onesaitplatform-revolution-dem/sources/prometheus-client/ /opt/pycli && \
+	chmod 777 /opt/pycli/*
 
 # Base directory into which to put our scripts
 ENV SCRIPT_DIR="/opt/pycli"
