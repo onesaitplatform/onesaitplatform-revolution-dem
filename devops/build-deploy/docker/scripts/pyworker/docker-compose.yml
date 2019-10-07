@@ -1,0 +1,10 @@
+version: "2"
+services:
+  pyprometheus:
+    build: ./prometheuspyclient
+    image: prometheuspyclient
+    restart: always
+    container_name: prometheuspyclient
+    environment:
+      PR_HOST: 172.23.144.10:9090
+      OP_SERVER_IP: 172.23.144.10

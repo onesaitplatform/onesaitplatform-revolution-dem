@@ -1,6 +1,6 @@
 FROM python:3.6-slim-stretch
 
-# We need cron, sshpass (to specify SSH passwords from files) and sftp
+# We need cron, git 
 RUN apt-get update && \
     apt-get install -y git cron && \
     cd /tmp/ && \
