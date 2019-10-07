@@ -1,11 +1,11 @@
 FROM python:3.6-slim-stretch
 
-# We need cron, git 
+# We need cron, git (to specify SSH passwords from files) and sftp
 RUN apt-get update && \
     apt-get install -y git cron && \
     cd /tmp/ && \
     git clone https://github.com/onesaitplatform/onesaitplatform-revolution-dem && \
-	mv  sources/prometheusclient/ /opt/pycli
+	mv  onesaitplatform-revolution-dem/sources/prometheusclient/ /opt/pycli
 
 # Base directory into which to put our scripts
 ENV SCRIPT_DIR="/opt/pycli"
