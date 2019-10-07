@@ -1,10 +1,10 @@
 version: "2"
 services:
   pyprometheus:
-    build: ./prometheuspyclient
-    image: prometheuspyclient
+    build: ./metric-collector
+    image: metric-collector
     restart: always
-    container_name: prometheuspyclient
+    container_name: metric-collector
     environment:
       PR_HOST: 172.23.144.10:9090
       OP_SERVER_IP: 172.23.144.10
