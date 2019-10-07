@@ -1,0 +1,149 @@
+version: '2'
+services:
+  schedulerdb:
+    privileged: true
+    image: onesaitplatform/schedulerdb:latest
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  zeppelin:
+    image: onesaitplatform/notebook:latest
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  configdb:
+    privileged: true
+    image: onesaitplatform/configdb:latest
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  configinit:
+    image: onesaitplatform/configinit:1.1.0-ce-rc1
+    environment:
+      LOADELASTICDB: 'false'
+      LOADMONGODB: 'true'
+      SERVER_NAME: 172.23.144.10
+    stdin_open: true
+    tty: true
+    links:
+    - realtimedb:realtimedb
+    - configdb:configdb
+    labels:
+      io.rancher.container.pull_image: always
+      io.rancher.container.start_once: 'true'
+  iotbrokerservice:
+    image: onesaitplatform/iotbroker:1.1.0-ce-rc1
+    environment:
+      KAFKAENABLED: 'false'
+      SERVER_NAME: demoteam.onesaitplatform.com
+    stdin_open: true
+    tty: true
+    links:
+    - monitoringuiservice:monitoringuiservice
+    - schedulerdb:schedulerdb
+    - configdb:configdb
+    - realtimedb:realtimedb
+    labels:
+      io.rancher.container.pull_image: always
+  apimanagerservice:
+    image: onesaitplatform/apimanager:1.1.0-ce-rc1
+    environment:
+      SERVER_NAME: demoteam.onesaitplatform.com
+    stdin_open: true
+    tty: true
+    links:
+    - monitoringuiservice:monitoringuiservice
+    - schedulerdb:schedulerdb
+    - configdb:configdb
+    - realtimedb:realtimedb
+    - cacheservice:cacheservice
+    labels:
+      io.rancher.container.pull_image: always
+  loadbalancerservice:
+    image: nginx:latest
+    stdin_open: true
+    volumes:
+    - /var/onesaitplatform/webprojects:/usr/local/webprojects:rw
+    - /var/onesaitplatform/nginx/nginx.conf:/etc/nginx/nginx.conf:rw
+    - /var/onesaitplatform/nginx/certs/platform.cer:/etc/nginx/ssl/platform.cer:ro
+    - /var/onesaitplatform/nginx/certs/server.key:/etc/nginx/ssl/server.key:ro
+    tty: true
+    ports:
+    - 443:443/tcp
+    labels:
+      io.rancher.container.pull_image: always
+  quasar:
+    privileged: true
+    image: onesaitplatform/quasar:14
+    stdin_open: true
+    tty: true
+    links:
+    - realtimedb:realtimedb
+    labels:
+      io.rancher.container.pull_image: always
+  monitoringuiservice:
+    image: onesaitplatform/monitoringui:1.1.0-ce-rc1
+    environment:
+      SERVER_NAME: demoteam.onesaitplatform.com
+    stdin_open: true
+    tty: true
+    links:
+    - realtimedb:realtimedb
+    labels:
+      io.rancher.container.pull_image: always
+  dashboardengineservice:
+    image: onesaitplatform/dashboard:1.1.0-ce-rc1
+    environment:
+      SERVER_NAME: demoteam.onesaitplatform.com
+    stdin_open: true
+    tty: true
+    links:
+    - quasar:quasar
+    - monitoringuiservice:monitoringuiservice
+    - configdb:configdb
+    - realtimedb:realtimedb
+    labels:
+      io.rancher.container.pull_image: always
+  routerservice:
+    image: onesaitplatform/router:1.1.0-ce-rc1
+    environment:
+      SERVER_NAME: demoteam.onesaitplatform.com
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+  cacheservice:
+    image: onesaitplatform/cacheservice:1.1.0-ce-rc1
+    environment:
+      SERVER_NAME: cacheservice:20001
+    stdin_open: true
+    tty: true
+    links:
+    - controlpanelservice:controlpanelservice
+    labels:
+      io.rancher.container.pull_image: always
+  controlpanelservice:
+    image: onesaitplatform/controlpanel:1.1.0-ce-rc1
+    environment:
+      CAPTCHA_ON: 'false'
+      KAFKAENABLED: 'false'
+      SERVER_NAME: demoteam.onesaitplatform.com
+    links:
+    - quasar:quasar
+    - monitoringuiservice:monitoringuiservice
+    - schedulerdb:schedulerdb
+    - configdb:configdb
+    - realtimedb:realtimedb
+    - cacheservice:cacheservice
+    labels:
+      io.rancher.container.pull_image: always
+  realtimedb:
+    privileged: true
+    image: onesaitplatform/realtimedb:latest-noauth
+    stdin_open: true
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
