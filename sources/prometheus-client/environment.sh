@@ -5,6 +5,9 @@ ENV_SCRIPT="${SCRIPT_DIR}/env-vars"
 
 echo "PR_HOST=${PR_HOST:-prometheus.prometheus:9090}
 OP_SERVER_IP=${OP_SERVER_IP:-somedbname}
+DC_NAME=${DC_NAME:-digitalclientname}
+DC_TOKEN=${DC_TOKEN:-digitalclienttoken}
+
 LOG_FILE=${LOG_FILE:-\"/var/log/pycli/pycli.log\"}
 " > ${ENV_SCRIPT}
 
