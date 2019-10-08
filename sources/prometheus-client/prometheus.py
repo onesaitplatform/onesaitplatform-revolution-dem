@@ -3,6 +3,8 @@ import sys
 from onesaitplatform.iotbroker import DigitalClient
 from datetime import datetime
 import os
+import logging
+
 
 def timestamp_to_datetime(timestamp):
     """Generate datetime string formatted for the ontology timeseries
@@ -90,6 +92,7 @@ def format_metric(metric_value):
 
 
 def insert_metric(data):
+    logger = logging.getLogger(__name__)
     """Inserting metrics on the ontologies
 
     Args:
@@ -112,25 +115,20 @@ def insert_metric(data):
 
 
     """
-    HOST = os.environ.get('SERVER_NAME')
-
-    digcli = DigitalClient(host=HOST, iot_client="DCPrometheus", iot_client_token="d333ac513e2749ed91d681c724c43db0")
+    digcli = DigitalClient(host=os.environ.get('OP_SERVER_IP'), iot_client=os.environ.get("DC_NAME"), iot_client_token=os.environ.get("DC_TOKEN"))
 
     digcli.avoid_ssl_certificate = True
 
     digcli.connect()
     ok_request, res_request = digcli.insert("PrometheusMetricOntology", data)
-    print(ok_request, res_request)
+    logger.info(ok_request, res_request)
     digcli.leave()
 
 
 if __name__ == '__main__':
     """
-	Main code which uses the functions declared to generate the data extracted from Prometheus to insert as an ontology with the digital client
-	TODO:
-	Use the PrometheusMetricTimestamp ontology to keep track of the last timestamp read of each measurement, so you don't need to extract all data each time
     """
-    url = "http://prometheus.prometheus:9090"
+    url = f"http://{os.environ.get('PR_HOST')}"
     metrics = get_metric_names(url)
     for metric in metrics:
         metric_data = get_metric_data(url, metric)
@@ -140,8 +138,7 @@ if __name__ == '__main__':
                 metric_input.append(format_metric(metric_value))
             if metric_input:
                 insert_metric(metric_input)
-            else:
-                sys.exit(1)
+
 
 
 
