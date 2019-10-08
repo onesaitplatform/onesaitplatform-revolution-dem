@@ -127,6 +127,9 @@ def insert_metric(data):
 
 if __name__ == '__main__':
     """
+	    Main code which uses the functions declared to generate the data extracted from Prometheus to insert as an ontology with the digital client
+    TODO:
+    Use the PrometheusMetricTimestamp ontology to keep track of the last timestamp read of each measurement, so you don't need to extract all data each time
     """
     url = f"http://{os.environ.get('PR_HOST')}"
     metrics = get_metric_names(url)
